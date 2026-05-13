@@ -69,9 +69,9 @@ function normalize(text) {
   return String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
-function getType(row) { return get(row, ["#", "jenis", "type asset"]); }
-function getIdEqp(row) { return get(row, ["Ideqp", "IdEqp", "id eqp"]); }
-function getIdLoc(row) { return get(row, ["Idloc", "IdLoc", "id loc"]); }
+function getType(row) { return get(row, ["#", "Jenis", "Type Asset"]); }
+function getIdEqp(row) { return get(row, ["Ideq", "Ideqp", "IdEqp", "Id Eqp"]); }
+function getIdLoc(row) { return get(row, ["Idloc", "IdLoc", "Id Loc"]); }
 function getUpt(row) { return get(row, ["Upt", "UPT"]); }
 function getGi(row) { return get(row, ["Gi", "GI"]); }
 function getBay(row) { return get(row, ["Bay"]); }
@@ -88,6 +88,10 @@ function getCriticality(row) { return get(row, ["Criticality Gi", "Criticality G
 function getJustifikasi(row) { return get(row, ["Justifikasi Prioritas", "Justifikasi"]); }
 function getStatusUsia(row) { return get(row, ["Status Usia"]); }
 function getRtl(row) { return get(row, ["Rencana Tindak Lanjut", "RTL"]); }
+function getTglInspeksi(row) { return get(row, ["Tgl Inspeksi", "Tanggal Inspeksi"]); }
+function getStatusHi(row) { return get(row, ["Status Hi", "Status HI"]); }
+function getPriority(row) { return get(row, ["Priority", "Prioritas"]); }
+function getNilaiHi(row) { return numberFromText(get(row, ["Nilai Hi", "Nilai HI"])); }
 
 function numberFromText(value) {
   const n = Number(String(value || "").replace(/[^0-9.-]/g, ""));
@@ -147,20 +151,45 @@ function priorityFlags(row) {
 
 function riskScore(row) {
   let score = 0;
+
   const c = criticalityGroup(row);
   const u = ageGroup(row);
   const f = priorityFlags(row);
+  const statusHi = normalize(getStatusHi(row));
+  const priority = normalize(getPriority(row));
+  const nilaiHi = getNilaiHi(row);
 
+  // Criticality GI
   if (c === "EXTREME") score += 40;
   else if (c === "TINGGI") score += 30;
   else if (c === "SEDANG") score += 15;
+  else if (c === "RENDAH") score += 5;
 
+  // Status Usia
   if (u === "SANGAT TUA") score += 30;
   else if (u === "TUA") score += 20;
+  else if (u === "MUDA") score += 5;
 
-  if (f.critical) score += 35;
-  if (f.poor) score += 25;
-  if (f.fair) score += 10;
+  // Status HI dari kolom database
+  if (statusHi.includes("critical")) score += 40;
+  else if (statusHi.includes("poor")) score += 30;
+  else if (statusHi.includes("fair")) score += 15;
+  else if (statusHi.includes("good")) score += 5;
+
+  // Priority dari kolom database
+  if (priority.includes("p1") || priority.includes("prioritas 1") || priority === "1") score += 30;
+  else if (priority.includes("p2") || priority.includes("prioritas 2") || priority === "2") score += 20;
+  else if (priority.includes("p3") || priority.includes("prioritas 3") || priority === "3") score += 10;
+
+  // Nilai HI
+  if (nilaiHi >= 80) score += 30;
+  else if (nilaiHi >= 60) score += 20;
+  else if (nilaiHi >= 40) score += 10;
+
+  // Keyword anomali dari Justifikasi / RTL
+  if (f.critical) score += 25;
+  if (f.poor) score += 18;
+  if (f.fair) score += 8;
   if (f.sf6) score += 20;
   if (f.closing) score += 12;
   if (f.opening) score += 8;
@@ -174,6 +203,14 @@ function riskScore(row) {
 }
 
 function priorityLabel(row) {
+  const priority = getPriority(row);
+  if (priority) return priority;
+
+  const statusHi = normalize(getStatusHi(row));
+  if (statusHi.includes("critical")) return "PRIORITAS 1";
+  if (statusHi.includes("poor")) return "PRIORITAS 2";
+  if (statusHi.includes("fair")) return "PRIORITAS 3";
+
   const score = riskScore(row);
   if (score >= 90) return "PRIORITAS 1";
   if (score >= 65) return "PRIORITAS 2";
@@ -406,6 +443,15 @@ function priorityBadge(value) {
   return badge(value, "badge-blue");
 }
 
+function statusHiBadge(value) {
+  const v = normalize(value);
+  if (v.includes("critical")) return badge(value, "badge-red");
+  if (v.includes("poor")) return badge(value, "badge-orange");
+  if (v.includes("fair")) return badge(value, "badge-yellow");
+  if (v.includes("good")) return badge(value, "badge-green");
+  return badge(value || "-", "badge-gray");
+}
+
 function renderPriorityTable(data) {
   const rows = [...data]
     .sort((a, b) => riskScore(b) - riskScore(a))
@@ -421,7 +467,9 @@ function renderPriorityTable(data) {
         <td>${escapeHtml([getMerek(r), getTipe(r)].filter(Boolean).join(" / ") || "-")}</td>
         <td>${criticalityBadge(criticalityGroup(r))}</td>
         <td>${usiaBadge(ageGroup(r))}</td>
+        <td>${statusHiBadge(getStatusHi(r))}</td>
         <td>${priorityBadge(priorityLabel(r))}</td>
+        <td><b>${getNilaiHi(r) || "-"}</b></td>
         <td><b>${riskScore(r)}</b></td>
         <td class="wrap">${escapeHtml(getJustifikasi(r) || "-")}</td>
       </tr>
@@ -439,7 +487,9 @@ function renderPriorityTable(data) {
         <th>Merek/Tipe</th>
         <th>Criticality</th>
         <th>Usia</th>
-        <th>Prioritas</th>
+        <th>Status HI</th>
+        <th>Priority</th>
+        <th>Nilai HI</th>
         <th>Skor</th>
         <th>Justifikasi</th>
       </tr>
@@ -491,8 +541,12 @@ function renderDatabaseTable(data) {
       <td>${escapeHtml(getMerek(r) || "-")}</td>
       <td>${escapeHtml(getTipe(r) || "-")}</td>
       <td>${escapeHtml(getTahunOperasi(r) || "-")}</td>
+      <td>${escapeHtml(getTglInspeksi(r) || "-")}</td>
       <td>${criticalityBadge(criticalityGroup(r))}</td>
       <td>${usiaBadge(ageGroup(r))}</td>
+      <td>${statusHiBadge(getStatusHi(r))}</td>
+      <td>${priorityBadge(priorityLabel(r))}</td>
+      <td><b>${getNilaiHi(r) || "-"}</b></td>
       <td class="wrap">${escapeHtml(getJustifikasi(r) || "-")}</td>
     </tr>
   `).join("");
@@ -510,8 +564,12 @@ function renderDatabaseTable(data) {
         <th>Merek</th>
         <th>Tipe</th>
         <th>Tahun Operasi</th>
+        <th>Tgl Inspeksi</th>
         <th>Criticality</th>
         <th>Usia</th>
+        <th>Status HI</th>
+        <th>Priority</th>
+        <th>Nilai HI</th>
         <th>Justifikasi</th>
       </tr>
     </thead>
@@ -558,10 +616,10 @@ function renderRtlTable(data) {
 
 function exportCSV() {
   const data = filteredData();
-  const headers = ["UPT", "GI", "Bay", "Phasa", "Tegangan", "Merek", "Tipe", "Tahun Operasi", "Criticality", "Status Usia", "Prioritas", "Skor Risiko", "Justifikasi", "Rencana Tindak Lanjut"];
+  const headers = ["UPT", "GI", "Bay", "Phasa", "Tegangan", "Merek", "Tipe", "Tahun Operasi", "Tgl Inspeksi", "Criticality", "Status Usia", "Status HI", "Priority", "Nilai HI", "Skor Risiko", "Justifikasi", "Rencana Tindak Lanjut"];
   const rows = data.map(r => [
     getUpt(r), getGi(r), getBay(r), getPhasa(r), voltageGroup(r), getMerek(r), getTipe(r),
-    getTahunOperasi(r), criticalityGroup(r), ageGroup(r), priorityLabel(r), riskScore(r),
+    getTahunOperasi(r), getTglInspeksi(r), criticalityGroup(r), ageGroup(r), getStatusHi(r), priorityLabel(r), getNilaiHi(r), riskScore(r),
     getJustifikasi(r), getRtl(r)
   ]);
 
