@@ -75,6 +75,7 @@ body {
   font-size: 14px;
   opacity: .9;
 }
+
 .menu a.active, .menu a:hover {
   background: rgba(255,255,255,.18);
   opacity: 1;
@@ -93,6 +94,7 @@ body {
   font-size: 13px;
   box-shadow: var(--shadow);
 }
+
 .sidebar-card .illus { font-size: 56px; margin-bottom: 8px; }
 .sidebar-card b { display: block; margin-top: 5px; }
 
@@ -103,17 +105,38 @@ body {
 }
 
 .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 18px;
   margin-bottom: 18px;
 }
 
-.title h2 { margin: 0; font-size: 26px; }
-.title p { margin: 5px 0 0; color: var(--blue); font-weight: 700; font-size: 14px; }
+.title {
+  min-width: 420px;
+}
 
-.top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.title h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.title p {
+  margin: 5px 0 0;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
 
 .select, .btn, .btn-secondary, .search input {
   border: 1px solid var(--border);
@@ -124,6 +147,18 @@ body {
   outline: none;
 }
 
+.select {
+  min-width: 150px;
+}
+
+#filterGi {
+  min-width: 230px;
+}
+
+#filterVoltage {
+  min-width: 170px;
+}
+
 .btn {
   background: var(--blue);
   color: white;
@@ -131,6 +166,7 @@ body {
   cursor: pointer;
   border: none;
   box-shadow: 0 10px 22px rgba(11, 99, 246, .22);
+  white-space: nowrap;
 }
 
 .btn-secondary {
@@ -141,10 +177,25 @@ body {
 }
 
 .grid { display: grid; gap: 18px; }
-.kpis { grid-template-columns: repeat(5, 1fr); margin-top: 18px; }
-.charts { grid-template-columns: 1.25fr 1fr 1fr; margin-top: 18px; }
-.middle { grid-template-columns: 1fr 1.55fr; margin-top: 18px; }
-.voltage { grid-template-columns: repeat(4, 1fr); }
+
+.kpis {
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 18px;
+}
+
+.charts {
+  grid-template-columns: 1.25fr 1fr 1fr;
+  margin-top: 18px;
+}
+
+.middle {
+  grid-template-columns: 1fr 1.55fr;
+  margin-top: 18px;
+}
+
+.voltage {
+  grid-template-columns: repeat(4, 1fr);
+}
 
 .card {
   background: var(--card);
@@ -161,30 +212,36 @@ body {
   background: linear-gradient(135deg, white, #edf5ff);
   border-color: #cfe1ff;
 }
+
 .hero small {
   color: var(--blue);
   font-weight: 900;
   letter-spacing: .5px;
 }
+
 .hero h1 {
   margin: 8px 0 8px;
   font-size: 28px;
 }
+
 .hero p {
   margin: 0;
   color: var(--muted);
   max-width: 850px;
 }
+
 .hero-meta {
   min-width: 210px;
   text-align: right;
 }
+
 .hero-meta span {
   display: block;
   color: var(--muted);
   font-size: 12px;
   margin-top: 8px;
 }
+
 .hero-meta b {
   display: block;
   color: var(--blue);
@@ -196,18 +253,26 @@ body {
   position: relative;
   overflow: hidden;
 }
+
 .kpi small {
   color: var(--blue);
   font-weight: 900;
   letter-spacing: .4px;
   text-transform: uppercase;
 }
+
 .kpi h3 {
   margin: 18px 0 6px;
   font-size: 31px;
   letter-spacing: .5px;
 }
-.kpi p { margin: 0; color: var(--muted); font-size: 14px; }
+
+.kpi p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .kpi .icon {
   position: absolute;
   right: 18px;
@@ -241,7 +306,13 @@ body {
   letter-spacing: .3px;
 }
 
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
 .tab {
   border: 1px solid var(--border);
   background: white;
@@ -251,29 +322,49 @@ body {
   color: var(--text);
   font-weight: 700;
 }
-.tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+.tab.active {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
 
 .table-wrap {
   overflow: auto;
   max-width: 100%;
 }
 
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
 th, td {
   padding: 12px 10px;
   border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: top;
 }
+
 th {
   color: var(--muted);
   text-transform: uppercase;
   font-size: 11px;
   white-space: nowrap;
 }
+
 td { white-space: nowrap; }
-td.wrap { white-space: normal; min-width: 260px; line-height: 1.45; }
-tbody tr:hover { background: #f8fbff; }
+
+td.wrap {
+  white-space: normal;
+  min-width: 260px;
+  line-height: 1.45;
+}
+
+tbody tr:hover {
+  background: #f8fbff;
+}
 
 .badge {
   display: inline-flex;
@@ -283,6 +374,7 @@ tbody tr:hover { background: #f8fbff; }
   font-weight: 800;
   white-space: nowrap;
 }
+
 .badge-red { background: #fee2e2; color: #dc2626; }
 .badge-orange { background: #ffedd5; color: #ea580c; }
 .badge-yellow { background: #fef9c3; color: #a16207; }
@@ -301,8 +393,12 @@ tbody tr:hover { background: #f8fbff; }
   gap: 12px;
   margin-bottom: 10px;
 }
+
 .table-header small { color: var(--muted); }
-.search input { min-width: 330px; }
+
+.search input {
+  min-width: 330px;
+}
 
 .bar-stack {
   height: 12px;
@@ -312,18 +408,24 @@ tbody tr:hover { background: #f8fbff; }
   margin: 18px 0 14px;
   background: #e5e7eb;
 }
+
 .seg-red { background: var(--red); }
 .seg-orange { background: var(--orange); }
 .seg-yellow { background: var(--yellow); }
 .seg-green { background: var(--green); }
 
-.voltage-card h3 { margin: 0; color: var(--blue); }
+.voltage-card h3 {
+  margin: 0;
+  color: var(--blue);
+}
+
 .voltage-card .unit {
   float: right;
   color: var(--muted);
   font-size: 13px;
   font-weight: 500;
 }
+
 .legend {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -331,6 +433,7 @@ tbody tr:hover { background: #f8fbff; }
   font-size: 12px;
   color: var(--muted);
 }
+
 .dot {
   width: 9px;
   height: 9px;
@@ -339,21 +442,101 @@ tbody tr:hover { background: #f8fbff; }
   margin-right: 6px;
 }
 
-#database, #rtl, #voltage { margin-top: 18px; }
+#database, #rtl, #voltage {
+  margin-top: 18px;
+}
 
 @media (max-width: 1220px) {
-  .kpis, .charts, .middle, .voltage { grid-template-columns: 1fr 1fr; }
-  .sidebar { width: 220px; }
-  .main { margin-left: 220px; width: calc(100% - 220px); }
+  .kpis, .charts, .middle, .voltage {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    min-width: 0;
+  }
+
+  .title h2 {
+    white-space: normal;
+  }
+
+  .top-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 760px) {
-  .app { display: block; }
-  .sidebar { position: relative; width: 100%; min-height: auto; }
-  .sidebar-card { display: none; }
-  .main { margin-left: 0; width: 100%; padding: 18px; }
-  .kpis, .charts, .middle, .voltage { grid-template-columns: 1fr; }
-  .topbar, .table-header, .hero { flex-direction: column; align-items: stretch; }
-  .hero-meta { text-align: left; }
-  .search input, .select, .btn, .btn-secondary { width: 100%; }
+  .app {
+    display: block;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+  }
+
+  .sidebar-card {
+    display: none;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 18px;
+  }
+
+  .topbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .title {
+    min-width: 0;
+  }
+
+  .title h2 {
+    white-space: normal;
+  }
+
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kpis, .charts, .middle, .voltage {
+    grid-template-columns: 1fr;
+  }
+
+  .table-header, .hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-meta {
+    text-align: left;
+  }
+
+  .search input, .select, .btn, .btn-secondary {
+    width: 100%;
+  }
+
+  #filterGi,
+  #filterVoltage {
+    min-width: 0;
+  }
 }
