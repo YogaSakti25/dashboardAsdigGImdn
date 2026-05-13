@@ -1,6 +1,6 @@
 const SHEET_ID = "1jyQQo9ZZC_p4_mdlE2MASYwPjt6Q0EqaJRcWphor0Aw";
 const GID = "0";
-const CSV_URL = `https://docs.google.com/spreadsheets/d/1jyQQo9ZZC_p4_mdlE2MASYwPjt6Q0EqaJRcWphor0Aw/edit?gid=0#gid=0`;
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
 
 let rawData = [];
 let selectedUpt = "SEMUA";
@@ -652,10 +652,24 @@ function renderAll() {
 async function loadData() {
   try {
     const res = await fetch(CSV_URL);
-    if (!res.ok) throw new Error("Gagal membaca spreadsheet. Pastikan akses Google Sheet = Anyone with the link - Viewer.");
+
+    if (!res.ok) {
+      throw new Error("Gagal membaca spreadsheet. Pastikan akses Google Sheet = Anyone with the link - Viewer.");
+    }
+
     const text = await res.text();
+
+    if (
+      text.toLowerCase().includes("<html") ||
+      text.toLowerCase().includes("<script") ||
+      text.toLowerCase().includes("docs_chrome")
+    ) {
+      throw new Error("Data yang terbaca bukan CSV. Cek kembali akses Google Sheet dan pastikan link spreadsheet bisa dibuka sebagai Viewer.");
+    }
+
     rawData = parseCSV(text);
     selectedUpt = document.getElementById("filterUpt")?.value || "SEMUA";
+
     renderFilters();
     renderAll();
   } catch (err) {
