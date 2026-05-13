@@ -138,13 +138,8 @@ body {
   flex-wrap: nowrap;
 }
 
-.select, .btn, .btn-secondary, .search input {
-  border: 1px solid var(--border);
-  background: white;
-  border-radius: 12px;
-  padding: 12px 14px;
-  color: var(--text);
-  outline: none;
+.select {
+  min-width: 150px;
 }
 
 .select {
@@ -479,25 +474,10 @@ tbody tr:hover {
 }
 
 @media (max-width: 760px) {
-  .app {
-    display: block;
-  }
-
-  .sidebar {
-    position: relative;
-    width: 100%;
-    min-height: auto;
-  }
-
-  .sidebar-card {
-    display: none;
-  }
-
-  .main {
-    margin-left: 0;
-    width: 100%;
-    padding: 18px;
-  }
+  .app { display: block; }
+  .sidebar { position: relative; width: 100%; min-height: auto; }
+  .sidebar-card { display: none; }
+  .main { margin-left: 0; width: 100%; padding: 18px; }
 
   .topbar {
     display: flex;
@@ -518,25 +498,8 @@ tbody tr:hover {
     align-items: stretch;
   }
 
-  .kpis, .charts, .middle, .voltage {
-    grid-template-columns: 1fr;
-  }
-
-  .table-header, .hero {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .hero-meta {
-    text-align: left;
-  }
-
-  .search input, .select, .btn, .btn-secondary {
-    width: 100%;
-  }
-
-  #filterGi,
-  #filterVoltage {
-    min-width: 0;
-  }
+  .kpis, .charts, .middle, .voltage { grid-template-columns: 1fr; }
+  .table-header, .hero { flex-direction: column; align-items: stretch; }
+  .hero-meta { text-align: left; }
+  .search input, .select, .btn, .btn-secondary { width: 100%; }
 }
