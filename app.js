@@ -1,6 +1,6 @@
 const SHEET_ID = "1jyQQo9ZZC_p4_mdlE2MASYwPjt6Q0EqaJRcWphor0Aw";
 const GID = "0";
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+const CSV_URL = `https://docs.google.com/spreadsheets/d/1jyQQo9ZZC_p4_mdlE2MASYwPjt6Q0EqaJRcWphor0Aw/edit?gid=0#gid=0`;
 
 let rawData = [];
 let selectedUpt = "SEMUA";
