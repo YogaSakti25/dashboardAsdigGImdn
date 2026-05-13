@@ -130,40 +130,46 @@ body {
   font-size: 14px;
 }
 
-.top-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: nowrap;
-}
-
-.select {
-  min-width: 150px;
-}
-
-.select {
-  min-width: 170px;
-  appearance: none;
-  -webkit-appearance: none;
+.top-actions select.select {
+  border: 1px solid #d8e3f5 !important;
+  background-color: #ffffff !important;
+  border-radius: 14px !important;
+  padding: 0 42px 0 16px !important;
+  height: 46px !important;
+  min-width: 170px !important;
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.06) !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
   background-image:
     linear-gradient(45deg, transparent 50%, #64748b 50%),
-    linear-gradient(135deg, #64748b 50%, transparent 50%);
+    linear-gradient(135deg, #64748b 50%, transparent 50%) !important;
   background-position:
-    calc(100% - 18px) calc(50% - 3px),
-    calc(100% - 12px) calc(50% - 3px);
-  background-size: 6px 6px;
-  background-repeat: no-repeat;
-  padding-right: 40px;
-  box-shadow: 0 4px 12px rgba(15,23,42,0.05);
+    calc(100% - 18px) 50%,
+    calc(100% - 12px) 50% !important;
+  background-size: 6px 6px !important;
+  background-repeat: no-repeat !important;
+}
+
+.top-actions select.select:hover {
+  border-color: #9ec5ff !important;
+  box-shadow: 0 8px 20px rgba(11,99,246,0.12) !important;
+}
+
+.top-actions select.select:focus {
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 4px rgba(11,99,246,0.12) !important;
 }
 
 #filterGi {
-  min-width: 230px;
+  min-width: 260px !important;
 }
 
 #filterVoltage {
-  min-width: 170px;
+  min-width: 190px !important;
 }
 
 .btn {
