@@ -256,33 +256,28 @@ function updateHero() {
 }
 
 function updateKpi(data) {
-const total = new Set(
-  data.map(r => getGi(r))
-).size;
 
-const extreme = new Set(
-  data
-    .filter(r => criticalityGroup(r) === "EXTREME")
-    .map(r => getGi(r))
-).size;
+  const total = data.length;
 
-const oldAsset = new Set(
-  data
-    .filter(r => ageGroup(r) === "TUA")
-    .map(r => getGi(r))
-).size;
+  // GI unik khusus EXTREME
+  const extreme = new Set(
+    data
+      .filter(r => criticalityGroup(r) === "EXTREME")
+      .map(r => getGi(r))
+  ).size;
 
-const veryOld = new Set(
-  data
-    .filter(r => ageGroup(r) === "SANGAT TUA")
-    .map(r => getGi(r))
-).size;
+  // sisanya tetap hitung peralatan
+  const oldAsset = data.filter(
+    r => ageGroup(r) === "TUA"
+  ).length;
 
-const rtl = new Set(
-  data
-    .filter(r => getRtl(r))
-    .map(r => getGi(r))
-).size;
+  const veryOld = data.filter(
+    r => ageGroup(r) === "SANGAT TUA"
+  ).length;
+
+  const rtl = data.filter(
+    r => getRtl(r)
+  ).length;
 
   setText("totalAsset", fmt.format(total));
   setText("extreme", fmt.format(extreme));
