@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard AHI MTU - UITJBM</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>AHI MTU</h1>
+          <p>UITJBM</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a href="#dashboard" class="active">⌂ Dashboard</a>
+        <a href="#resume">▣ Resume AHI</a>
+        <a href="#priority">▤ Prioritas MTU</a>
+        <a href="#voltage">⚡ Cluster Tegangan</a>
+        <a href="#database">◎ Database</a>
+        <a href="#rtl">▧ RTL</a>
+      </nav>
+
+      <div class="sidebar-card">
+        <div class="illus">📊</div>
+        <b>Monitoring Asset</b>
+        <b>Health Index</b>
+      </div>
+    </aside>
+
+    <main class="main" id="dashboard">
+      <header class="topbar">
+        <div class="title">
+          <h2>Dashboard AHI MTU – UITJBM</h2>
+          <p>Asset Health Index • Monitoring Unit Transmisi • Konvensional</p>
+        </div>
+
+        <div class="top-actions">
+          <select id="filterUpt" class="select"></select>
+          <select id="filterGi" class="select"></select>
+          <select id="filterVoltage" class="select"></select>
+          <button class="btn" onclick="loadData()">Refresh Data</button>
+        </div>
+      </header>
+
+      <section class="hero card">
+        <div>
+          <small>DATABASE HEALTHY INDEX MTU</small>
+          <h1>Monitoring Prioritas Peralatan PMT</h1>
+          <p>Dashboard membaca data realtime dari Google Sheets dan merangkum kondisi aset berdasarkan criticality, usia, tegangan, justifikasi prioritas, dan rencana tindak lanjut.</p>
+        </div>
+        <div class="hero-meta">
+          <span>Update Data</span>
+          <b id="lastUpdate">-</b>
+          <span>Total Database</span>
+          <b id="heroTotal">0 Peralatan</b>
+        </div>
+      </section>
+
+      <section class="grid kpis">
+        <div class="card kpi">
+          <small>Total Peralatan</small>
+          <h3 id="totalAsset">0</h3>
+          <p>Sesuai filter aktif</p>
+          <div class="icon bg-blue">▦</div>
+        </div>
+        <div class="card kpi">
+          <small class="red">Criticality Extreme</small>
+          <h3 id="extreme" class="red">0</h3>
+          <p id="extremePct">0% dari total</p>
+          <div class="icon bg-red">!</div>
+        </div>
+        <div class="card kpi">
+          <small class="orange">Status Usia Tua</small>
+          <h3 id="oldAsset" class="orange">0</h3>
+          <p id="oldPct">0% dari total</p>
+          <div class="icon bg-orange">⏱</div>
+        </div>
+        <div class="card kpi">
+          <small class="yellow">Sangat Tua</small>
+          <h3 id="veryOldAsset" class="yellow">0</h3>
+          <p id="veryOldPct">0% dari total</p>
+          <div class="icon bg-yellow">⚠</div>
+        </div>
+        <div class="card kpi">
+          <small class="green">Dengan RTL</small>
+          <h3 id="rtlAsset" class="green">0</h3>
+          <p id="rtlPct">0% dari total</p>
+          <div class="icon bg-green">✓</div>
+        </div>
+      </section>
+
+      <section class="grid charts" id="resume">
+        <div class="card">
+          <h3 class="section-title">Resume Kondisi per UPT</h3>
+          <div class="tabs" id="uptTabs"></div>
+          <div class="table-wrap">
+            <table id="uptTable"></table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Distribusi Criticality GI</h3>
+          <div class="chart-box"><canvas id="criticalityChart"></canvas></div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Distribusi Status Usia</h3>
+          <div class="chart-box"><canvas id="ageChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="grid middle" id="priority">
+        <div class="card">
+          <h3 class="section-title">Distribusi Peralatan per Tegangan</h3>
+          <div class="chart-large"><canvas id="voltageChart"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="table-header">
+            <div>
+              <h3 class="section-title">Top Prioritas Penanganan</h3>
+              <small>Diurutkan berdasarkan skor risiko otomatis</small>
+            </div>
+            <div class="search">
+              <input id="searchBox" placeholder="Cari UPT, GI, Bay, Merek, Justifikasi, RTL..." oninput="renderAll()" />
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="priorityTable"></table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="voltage">
+        <h3 class="section-title">Cluster Level Tegangan</h3>
+        <div class="grid voltage" id="voltageGrid"></div>
+      </section>
+
+      <section class="card" id="database">
+        <div class="table-header">
+          <div>
+            <h3 class="section-title">Database Peralatan</h3>
+            <small>Menampilkan data utama sesuai filter aktif</small>
+          </div>
+          <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table id="databaseTable"></table>
+        </div>
+      </section>
+
+      <section class="card" id="rtl">
+        <h3 class="section-title">Rencana Tindak Lanjut</h3>
+        <div class="table-wrap">
+          <table id="rtlTable"></table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
